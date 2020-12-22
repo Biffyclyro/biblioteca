@@ -1,0 +1,33 @@
+package br.ufsm.csi.biblioteca.model;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+
+@Data
+@Entity
+@NoArgsConstructor
+public class Livro {
+    @Id
+    @Column(name = "id_livro")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private BigInteger idLivro;
+    private String titulo;
+    @Column(unique = true)
+    private String isbn;
+    private String edicao;
+    private String editora;
+    private String ano;
+    private boolean emprestado;
+    @OneToMany
+    @OrderBy("idUsuario")
+    private List<Usuario> reservas = new ArrayList<Usuario>();
+
+    public Queue<Usuario> getReservas() {
+        return new LinkedList<Usuario>(this.reservas.sort());
+    }
+}
