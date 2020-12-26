@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Biblioteca</title>
+</head>
+<body>
+
+<div class=" offset-3 col-md-6">
+
+    <form method="post" th:action="@{livros/cadastrar}">
+        <div class="form-group">
+            <label for="titulo">Titulo</label>
+            <input type="text" class="form-control" id="titulo" name="titulo"  placeholder="Entre com o titulo">
+        </div>
+        <div class="form-group">
+            <label for="autores">Autores</label>
+            <input type="text" class="form-control" id="autores" name="autores" placeholder="Entre com os autores">
+        </div>
+
+        <div class="form-group">
+            <label for="isbn">ISBN</label>
+            <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Entre com o ISBN">
+        </div>
+        <div class="form-group">
+            <label for="edicao">Edição</label>
+            <input type="text" class="form-control" id="edicao" name="edicao" placeholder="Entre com a edição">
+        </div>
+        <div class="form-group">
+            <label for="editora">Editora</label>
+            <input type="text" class="form-control" id="editora" name="editora" placeholder="Entre com a editora">
+        </div>
+        <div class="form-group">
+            <label for="ano">Ano</label>
+            <input type="text" class="form-control" id="ano" name="ano" placeholder="Entre com o ano">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+
+    </form>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

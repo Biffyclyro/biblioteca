@@ -1,16 +1,25 @@
 package br.ufsm.csi.biblioteca.controller;
 
 import br.ufsm.csi.biblioteca.model.Livro;
+import br.ufsm.csi.biblioteca.repository.LivroRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/livros")
 public class LivroController {
+    private final LivroRepository livroRepository;
+
+    public LivroController(LivroRepository livroRepository) {
+        this.livroRepository = livroRepository;
+    }
 
     @GetMapping
-    public String listarLivros() {
-        return "listar";
+    public String listarLivros(Model model) {
+        final var acervo = livroRepository.findAll();
+        model.addAttribute("acervo", acervo);
+        return "livros";
     }
 
     @GetMapping("/emprestar/{id_livro}")

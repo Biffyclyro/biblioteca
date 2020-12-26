@@ -17,6 +17,7 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private BigInteger idLivro;
     private String titulo;
+    private String autores;
     @Column(unique = true)
     private String isbn;
     private String edicao;
@@ -28,6 +29,6 @@ public class Livro {
     private List<Usuario> reservas = new ArrayList<Usuario>();
 
     public Queue<Usuario> getReservas() {
-        return new LinkedList<Usuario>(this.reservas.sort());
+        return new LinkedList<Usuario>(this.reservas);
     }
 }
