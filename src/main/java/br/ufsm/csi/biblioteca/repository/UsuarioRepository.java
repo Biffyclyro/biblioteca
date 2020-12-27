@@ -1,4 +1,7 @@
 package br.ufsm.csi.biblioteca.repository;
 
-public interface UsuarioRepository {
+import br.ufsm.csi.biblioteca.model.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 }

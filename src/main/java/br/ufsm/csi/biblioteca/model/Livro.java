@@ -12,10 +12,19 @@ import java.util.concurrent.ArrayBlockingQueue;
 @Entity
 @NoArgsConstructor
 public class Livro {
+
+    public Livro(String titulo, String autores, String isbn, String editora, String edicao, String ano) {
+        this.titulo = titulo;
+        this.autores = autores;
+        this.isbn = isbn;
+        this.editora = editora;
+        this.ano = ano;
+    }
+
     @Id
     @Column(name = "id_livro")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private BigInteger idLivro;
+    private int idLivro;
     private String titulo;
     private String autores;
     @Column(unique = true)
@@ -30,5 +39,9 @@ public class Livro {
 
     public Queue<Usuario> getReservas() {
         return new LinkedList<Usuario>(this.reservas);
+    }
+
+    public void reservar(Usuario u){
+        this.reservas.add(u);
     }
 }

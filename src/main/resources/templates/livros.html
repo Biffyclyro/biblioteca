@@ -10,15 +10,15 @@
 </head>
 <body>
 
-<div class=" offset-3 col-md-6">
-    <table id="tabela" class="able table-dark col-5 offset-1">
+<div class=" offset-3 col-md-8">
+    <table id="tabela" class="able table-dark">
         <thead>
         <tr>
             <td><b>Livro</b></td>
             <td><b>Autores</b></td>
             <td><b>Edição</b></td>
             <td><b>Ano</b></td>
-            <td scope="col"><a class="btn btn-primary" href="/livros/cadastrar">Novo Livro</a></td>
+            <td scope="col"><a class="btn btn-primary" href="/livros/cadastro">Novo Livro</a></td>
         </tr>
         </thead>
         <tbody>
@@ -28,10 +28,27 @@
                 <td th:text="${item.getAutores()}"></td>
                 <td th:text="${item.getEdicao()}"></td>
                 <td th:text="${item.getAno()}"></td>
-                <form th:method="get" th:action="@{/livros/emprestar/${item.getIdLivro()}}">
+                <form  th:if="${!item.isEmprestado()}"
+                       th:method="get"
+                       th:action="@{livros/emprestar}"
+                >
                     <td>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-sucsses">Emprestar</button>
+                        <div class="form-group" >
+                            <button type="submit" class="btn btn-success">Emprestar</button>
+                            <input type="number" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}" hidden>
+                        </div>
+
+                    </td>
+                </form>
+                <form th:unless="${!item.isEmprestado()}"
+                      method="get"
+                      th:action="@{/reservar}"
+                >
+                    <td>
+                       <div class="form-group" >
+                            <button type="submit" class="btn btn-warning">Reservar</button>
+                            <input type="hidden" th:value="${item.getIdLivro()}">
+
                         </div>
                     </td>
                 </form>
