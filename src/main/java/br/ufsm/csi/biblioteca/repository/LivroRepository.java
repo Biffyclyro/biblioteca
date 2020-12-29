@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface LivroRepository extends JpaRepository<Livro, Integer> {
     List<Livro> findAll();
+    List<Livro> findAllByTitulo(String titulo);
 }

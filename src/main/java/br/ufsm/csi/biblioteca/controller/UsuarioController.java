@@ -3,12 +3,12 @@ package br.ufsm.csi.biblioteca.controller;
 import br.ufsm.csi.biblioteca.model.Usuario;
 import br.ufsm.csi.biblioteca.repository.UsuarioRepository;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+
+import static br.ufsm.csi.biblioteca.utils.Functions.checkSession;
 
 @Controller
 @RequestMapping("/usuario")
@@ -65,6 +65,45 @@ public class UsuarioController {
 
 
        return "redirect:/usuario/login";
+    }
+
+    @GetMapping("/editar")
+    public String editar(HttpSession session, Model model) {
+        if (!checkSession(session)) {
+            return "redirect:/login";
+        }
+        final var usuario = (Usuario) session.getAttribute("usuario");
+
+        model.addAttribute("usuario", usuario);
+
+        return "editar_usuario";
+    }
+
+    @PostMapping("/editar")
+    public String editarUsuario(HttpSession session, Usuario usuario) {
+        if (!checkSession(session)) {
+            return "redirect:/login";
+        }
+        final var usuarioSession = (Usuario) session.getAttribute("usuario");
+
+        usuario.setIdUsuario(usuarioSession.getIdUsuario());
+        usuario.setTipoUsuario(usuarioSession.getTipoUsuario());
+
+        usuarioRepository.save(usuario);
+
+        return "redirect:/logout";
+
+    }
+
+    @DeleteMapping
+    public String deletarUsuario(HttpSession session) {
+        if (!checkSession(session)) {
+            return "redirect:/login";
+        }
+        final var usuario = (Usuario) session.getAttribute("usuario");
+        usuarioRepository.deleteById(usuario.getIdUsuario());
+
+        return "redirect:/logout";
     }
 
     @PostMapping("/pagar")
