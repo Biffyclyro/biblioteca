@@ -13,13 +13,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 @NoArgsConstructor
 public class Livro {
 
-    public Livro(String titulo, String autores, String isbn, String editora, String edicao, String ano) {
-        this.titulo = titulo;
-        this.autores = autores;
-        this.isbn = isbn;
-        this.editora = editora;
-        this.ano = ano;
-    }
+
 
     @Id
     @Column(name = "id_livro")
@@ -33,9 +27,32 @@ public class Livro {
     private String editora;
     private String ano;
     private boolean emprestado;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario emprestadoPara;
     @OneToMany
     @OrderBy("idUsuario")
     private List<Usuario> reservas = new ArrayList<Usuario>();
+
+    public Livro(String titulo, String autores, String isbn, String editora, String edicao, String ano) {
+        this.titulo = titulo;
+        this.autores = autores;
+        this.isbn = isbn;
+        this.editora = editora;
+        this.ano = ano;
+    }
+
+    public void emprestar(Usuario u){
+        setEmprestado(true);
+        setEmprestadoPara(u);
+    }
+
+    public void devolver(Usuario u) {
+        if (u.getIdUsuario() == this.emprestadoPara.getIdUsuario()) {
+            this .emprestadoPara = null;
+            this.setEmprestado(false);
+        }
+    }
 
     public Queue<Usuario> getReservas() {
         return new LinkedList<Usuario>(this.reservas);

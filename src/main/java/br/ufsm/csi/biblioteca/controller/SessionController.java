@@ -32,8 +32,11 @@ public class SessionController {
             u.setLIMITE_LIVROS(usuario.getLIMITE_LIVROS());
             u.setNome(usuario.getNome());
             u.setTipoUsuario(usuario.getTipoUsuario());
+            u.setMulta(usuario.getMulta());
+
         }
 
         return "redirect:/livros";
     }
+
 }

@@ -10,6 +10,10 @@
 </head>
 <body>
 
+<th:block th:if="${#session} and ${#session.getValue('usuario')}">
+    <a href="/usuario/logout" class="btn btn-primary">Logout</a>
+</th:block>
+
 <div class=" offset-3 col-md-8">
     <table id="tabela" class="able table-dark">
         <thead>
@@ -18,7 +22,9 @@
             <td><b>Autores</b></td>
             <td><b>Edição</b></td>
             <td><b>Ano</b></td>
-            <td scope="col"><a class="btn btn-primary" href="/livros/cadastro">Novo Livro</a></td>
+            <div th:if="${#session} and ${#session.getValue('usuario')} and ${#session.getValue('usuario').getTipoUsuario().name() == 'SUPER'}">
+                <td scope="col"><a class="btn btn-primary" href="/livros/cadastro">Novo Livro</a></td>
+            </div>
         </tr>
         </thead>
         <tbody>
@@ -36,6 +42,7 @@
                         <div class="form-group" >
                             <button type="submit" class="btn btn-success">Emprestar</button>
                             <input type="number" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}" hidden>
+                            <input hidden type="number" name="idUsuario" id="idUsuario" th:value="${#session.getAttribute('usuario').getIdUsuario()}">
                         </div>
 
                     </td>

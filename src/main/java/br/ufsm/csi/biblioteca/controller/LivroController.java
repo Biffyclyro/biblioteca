@@ -1,11 +1,14 @@
 package br.ufsm.csi.biblioteca.controller;
 
 import br.ufsm.csi.biblioteca.model.Livro;
+import br.ufsm.csi.biblioteca.model.Usuario;
 import br.ufsm.csi.biblioteca.repository.LivroRepository;
 import br.ufsm.csi.biblioteca.repository.UsuarioRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("livros")
@@ -19,21 +22,33 @@ public class LivroController {
     }
 
     @GetMapping
-    public String listarLivros(Model model) {
+    public String listarLivros( HttpSession session ,Model model) {
+        if (!this.checkSession(session)){
+
+            return "redirect:/usuario/login";
+        }
         final var acervo = livroRepository.findAll();
         model.addAttribute("acervo", acervo);
+
+
+
         return "livros";
     }
 
     @GetMapping("emprestar")
-    public String emprestaLivros(@RequestParam int idLivro) {
+    public String emprestaLivros( HttpSession session,@RequestParam int idLivro, @RequestParam int idUsuario) {
+        if (!this.checkSession(session)){
+
+            return "redirect:/usuario/login";
+        }
 
         final var optLivro = livroRepository.findById(idLivro);
 
 
         if (optLivro.isPresent()){
             final var livro = optLivro.get();
-            livro.setEmprestado(true);
+            final var usuario = (Usuario) session.getAttribute("usuario");
+            usuario.pegarLivro(livro);
             livroRepository.save(livro);
         }
 
@@ -41,7 +56,11 @@ public class LivroController {
     }
 
     @GetMapping("reservar")
-    public String reservar(@RequestParam int idLivro, @RequestParam int id_usuario){
+    public String reservar( HttpSession session,@RequestParam int idLivro, @RequestParam int id_usuario){
+        if (!this.checkSession(session)){
+
+            return "redirect:/usuario/login";
+        }
 
         final var optLivro = livroRepository.findById(idLivro);
         final var optUsuario = usuarioRepository.findById(id_usuario);
@@ -59,27 +78,46 @@ public class LivroController {
         return "redirect:/listar";
     }
      @GetMapping("reservar/cancelar/{id_livro}")
-     public String cancelarReserva() {
+     public String cancelarReserva(HttpSession session) {
+         if (!this.checkSession(session)){
+
+             return "redirect:/usuario/login";
+         }
         return "redirect:/listar";
      }
 
     @GetMapping("/devolver/{id_livro}")
-    public String devolver(@PathVariable int idLivro){
+    public String devolver( HttpSession session,@PathVariable int idLivro){
+        if (!this.checkSession(session)){
+
+            return "redirect:/usuario/login";
+        }
         return "redirect:listar";
 
     }
 
     @GetMapping("/cadastro")
-    public String paginaCadastro() {
+    public String paginaCadastro(HttpSession session) {
+        if (!this.checkSession(session)){
+
+            return "redirect:/usuario/login";
+        }
         return "cadastro_livro";
     }
 
     @PostMapping("/cadastrar")
-    public String cadastrarLivro(Livro livro) {
+    public String cadastrarLivro(HttpSession session ,Livro livro) {
+        if (!this.checkSession(session)){
+
+            return "redirect:/usuario/login";
+        }
         livro.setEmprestado(false);
         this.livroRepository.save(livro);
         return "redirect:/livros";
     }
 
+    private boolean checkSession(HttpSession s) {
+        return s.getAttribute("usuario") instanceof Usuario;
+    }
 
 }

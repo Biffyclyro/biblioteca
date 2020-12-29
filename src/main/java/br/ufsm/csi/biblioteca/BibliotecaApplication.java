@@ -14,7 +14,7 @@ public class BibliotecaApplication implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("livros");
+        registry.addViewController("/").setViewName("redirect:/livros");
     }
 
 }
