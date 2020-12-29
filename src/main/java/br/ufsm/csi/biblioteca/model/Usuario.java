@@ -2,9 +2,11 @@ package br.ufsm.csi.biblioteca.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import java.math.BigInteger;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -15,8 +17,9 @@ public class Usuario {
     @Column(name = "id_usuario")
     private int idUsuario;
     private String nome;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
+    @NonNull
     private String senha;
     @Column(name = "tipo_usuario", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -69,5 +72,14 @@ public class Usuario {
             return dinheiro - this.multa;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return idUsuario == usuario.idUsuario;
+    }
+
 
 }

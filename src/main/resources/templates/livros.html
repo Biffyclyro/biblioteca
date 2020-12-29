@@ -34,31 +34,67 @@
                 <td th:text="${item.getAutores()}"></td>
                 <td th:text="${item.getEdicao()}"></td>
                 <td th:text="${item.getAno()}"></td>
-                <form  th:if="${!item.isEmprestado()}"
-                       th:method="get"
-                       th:action="@{livros/emprestar}"
-                >
-                    <td>
-                        <div class="form-group" >
-                            <button type="submit" class="btn btn-success">Emprestar</button>
-                            <input type="number" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}" hidden>
-                            <input hidden type="number" name="idUsuario" id="idUsuario" th:value="${#session.getAttribute('usuario').getIdUsuario()}">
-                        </div>
+                <th:block th:if="${!item.isEmprestado()}">
+                    <form
+                           th:method="get"
+                           th:action="@{livros/emprestar}"
+                    >
+                        <td>
+                            <div class="form-group" >
+                                <button type="submit" class="btn btn-success">Emprestar</button>
+                                <input type="number" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}" hidden>
+                                <input hidden type="number" name="idUsuario" id="idUsuario" th:value="${#session.getAttribute('usuario').getIdUsuario()}">
+                            </div>
 
-                    </td>
-                </form>
-                <form th:unless="${!item.isEmprestado()}"
-                      method="get"
-                      th:action="@{/reservar}"
-                >
-                    <td>
-                       <div class="form-group" >
-                            <button type="submit" class="btn btn-warning">Reservar</button>
-                            <input type="hidden" th:value="${item.getIdLivro()}">
+                        </td>
+                    </form>
 
-                        </div>
-                    </td>
-                </form>
+                </th:block>
+                <th:block th:unless="${!item.isEmprestado()}">
+                    <th:block th:if="${item.getEmprestadoPara().getIdUsuario() == #session.getAttribute('usuario').getIdUsuario()}">
+
+                        <form
+                                method="get"
+                                th:action="@{livros/devolver}"
+                        >
+                            <td>
+                                <div class="form-group" >
+                                    <button type="submit" class="btn btn-danger">Devolver</button>
+                                    <input type="hidden" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}">
+
+                                </div>
+                            </td>
+                        </form>
+                    </th:block>
+
+                    <th:block th:unless="${item.getEmprestadoPara().getIdUsuario() == #session.getAttribute('usuario').getIdUsuario()}">
+                        <form th:if="${item.getReservas().contains(#session.getAttribute('usuario'))}"
+                              method="get"
+                              th:action="@{livros/cancelar}"
+                        >
+                            <td>
+                                <div class="form-group" >
+                                    <button type="submit" class="btn btn-warning">Cancelar Reserva</button>
+                                    <input type="hidden" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}">
+
+                                </div>
+                            </td>
+                        </form>
+
+                        <form th:unless="${item.getReservas().contains(#session.getAttribute('usuario'))}"
+                              method="get"
+                              th:action="@{livros/reservar}"
+                        >
+                            <td>
+                                <div class="form-group" >
+                                    <button type="submit" class="btn btn-warning">Reservar</button>
+                                    <input type="hidden" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}">
+
+                                </div>
+                            </td>
+                        </form>
+                    </th:block>
+                </th:block>
             </tr>
         </th:block>
         </tbody>

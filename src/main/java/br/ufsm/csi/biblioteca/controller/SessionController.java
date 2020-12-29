@@ -33,6 +33,7 @@ public class SessionController {
             u.setNome(usuario.getNome());
             u.setTipoUsuario(usuario.getTipoUsuario());
             u.setMulta(usuario.getMulta());
+            u.setEmprestados(usuario.getEmprestados());
 
         }
 

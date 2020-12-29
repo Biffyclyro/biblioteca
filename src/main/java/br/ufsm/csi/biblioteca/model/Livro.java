@@ -30,7 +30,7 @@ public class Livro {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario emprestadoPara;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @OrderBy("idUsuario")
     private List<Usuario> reservas = new ArrayList<Usuario>();
 
@@ -54,11 +54,19 @@ public class Livro {
         }
     }
 
+
     public Queue<Usuario> getReservas() {
+        //this.reservas.forEach(x -> System.out.println(x.getEmail()));
         return new LinkedList<Usuario>(this.reservas);
     }
 
+
+
     public void reservar(Usuario u){
         this.reservas.add(u);
+    }
+
+    public void cancelarReserva(Usuario u) {
+        this.reservas.remove(u);
     }
 }

@@ -24,10 +24,14 @@ public class LivroController {
     @GetMapping
     public String listarLivros( HttpSession session ,Model model) {
         if (!this.checkSession(session)){
+            System.out.println("que?");
 
             return "redirect:/usuario/login";
         }
         final var acervo = livroRepository.findAll();
+        acervo.forEach(x -> {
+            System.out.println(x.getReservas().contains((Usuario) session.getAttribute("usuario")));
+        });
         model.addAttribute("acervo", acervo);
 
 
@@ -56,43 +60,72 @@ public class LivroController {
     }
 
     @GetMapping("reservar")
-    public String reservar( HttpSession session,@RequestParam int idLivro, @RequestParam int id_usuario){
+    public String reservar( HttpSession session,@RequestParam int idLivro){
         if (!this.checkSession(session)){
 
             return "redirect:/usuario/login";
         }
 
         final var optLivro = livroRepository.findById(idLivro);
-        final var optUsuario = usuarioRepository.findById(id_usuario);
+        //final var optUsuario = usuarioRepository.findById(id_usuario);
 
-        if (optLivro.isPresent() && optUsuario.isPresent()){
+        if (optLivro.isPresent() ){
             final var livro = optLivro.get();
-            final var usuario = optUsuario.get();
+         //   final var usuario = optUsuario.get();
 
-            livro.reservar(usuario);
+            livro.reservar((Usuario) session.getAttribute("usuario"));
 
             livroRepository.save(livro);
 
         }
 
-        return "redirect:/listar";
+        return "redirect:/livros";
     }
-     @GetMapping("reservar/cancelar/{id_livro}")
-     public String cancelarReserva(HttpSession session) {
+     @GetMapping("cancelar")
+     public String cancelarReserva(HttpSession session, @RequestParam int idLivro) {
          if (!this.checkSession(session)){
 
              return "redirect:/usuario/login";
          }
-        return "redirect:/listar";
+
+         final var optLivro = livroRepository.findById(idLivro);
+
+         if (optLivro.isPresent()) {
+             final var livro = optLivro.get();
+
+             final var usuario = (Usuario) session.getAttribute("usuario");
+
+             livro.cancelarReserva(usuario);
+
+             livroRepository.save(livro);
+
+         }
+
+
+        return "redirect:/livros";
      }
 
-    @GetMapping("/devolver/{id_livro}")
-    public String devolver( HttpSession session,@PathVariable int idLivro){
+    @GetMapping("/devolver")
+    public String devolver( HttpSession session,@RequestParam  int idLivro){
         if (!this.checkSession(session)){
 
             return "redirect:/usuario/login";
         }
-        return "redirect:listar";
+
+        final var optLivro = livroRepository.findById(idLivro);
+
+        if (optLivro.isPresent()) {
+            final var livro = optLivro.get();
+            final var usuario = (Usuario) session.getAttribute("usuario");
+
+            usuario.devolver(livro);
+
+
+            livroRepository.save(livro);
+        }
+
+
+        return "redirect:/livros";
 
     }
 

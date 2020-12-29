@@ -1,8 +1,9 @@
 #biblioteca
 
 [X] login/logout
-[] emprestar livro
+[X] emprestar livro
 [X] cadastrar livro
-[] devolver livro
+[X] devolver livro
 [] pagar multa
-[] reservar
+[X] reservar
+[] buscar livro
