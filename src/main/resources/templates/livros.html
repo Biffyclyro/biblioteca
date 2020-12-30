@@ -12,7 +12,8 @@
 
 <th:block th:if="${#session} and ${#session.getValue('usuario')}">
     <a href="/usuario/logout" class="btn btn-primary">Logout</a>
-    <th:block th:if="${#session.getAttribute('usuario').getTipoUsuario.getName() == 'SUPER'}">
+    <a href="usuario/editar" class="btn btn-info">Editar</a>
+    <th:block th:if="${#session.getAttribute('usuario').getTipoUsuario.name() == 'SUPER'}">
         <a href="usuario/listar" class="btn btn-success">Listar Usuários</a>
 
     </th:block>

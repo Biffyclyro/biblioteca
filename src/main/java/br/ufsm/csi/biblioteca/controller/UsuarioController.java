@@ -1,5 +1,6 @@
 package br.ufsm.csi.biblioteca.controller;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import br.ufsm.csi.biblioteca.model.Usuario;
 import br.ufsm.csi.biblioteca.repository.UsuarioRepository;
 import org.springframework.stereotype.Controller;
@@ -34,9 +35,10 @@ public class UsuarioController {
         if(optUsuario.isPresent()){
 
             final var u = optUsuario.get();
+            final  var resultado =  BCrypt.verifyer().verify(senha.toCharArray(), u.getSenha());
 
             System.out.println( u.getSenha());
-            if(u.getSenha().equals(senha)){
+            if(resultado.verified){
 
                 return "redirect:/session/" + u.getIdUsuario();
             }
@@ -61,9 +63,9 @@ public class UsuarioController {
             usuario.setTipoUsuario(Usuario.TipoUsuario.SUPER);
         }
 
-        usuarioRepository.save(usuario);
+        usuarioRepository.save(this.escreveSenha(usuario));
 
-       return "redirect:/usuario/login";
+       return "redirect:login";
     }
 
     @GetMapping("listar")
@@ -99,7 +101,7 @@ public class UsuarioController {
     @GetMapping("/editar")
     public String editar(HttpSession session, Model model) {
         if (!checkSession(session)) {
-            return "redirect:/login";
+            return "redirect:login";
         }
         final var usuario = (Usuario) session.getAttribute("usuario");
 
@@ -111,22 +113,43 @@ public class UsuarioController {
     @PostMapping("/editar")
     public String editarUsuario(HttpSession session, Usuario usuario) {
         if (!checkSession(session)) {
-            return "redirect:/login";
+            return "redirect:login";
         }
         final var usuarioSession = (Usuario) session.getAttribute("usuario");
 
-        usuario.setIdUsuario(usuarioSession.getIdUsuario());
-        usuario.setTipoUsuario(usuarioSession.getTipoUsuario());
+        if (usuarioSession.getTipoUsuario() != Usuario.TipoUsuario.SUPER && usuario.getNome().equals("SUPER")){
+            return "redirect:editar";
+        }
 
-        usuarioRepository.save(usuario);
+        final var optUsuario = usuarioRepository.findById(usuarioSession.getIdUsuario());
 
-        return "redirect:/logout";
+        if (optUsuario.isPresent()) {
+            final var usuarioPersist = optUsuario.get();
+            usuarioPersist.setEmail(usuario.getEmail());
+            if (!usuario.getNome().equals(usuarioPersist.getNome()) && usuarioPersist.getTipoUsuario() == Usuario.TipoUsuario.SUPER) {
+                usuarioPersist.setTipoUsuario(Usuario.TipoUsuario.ALUNO);
+            }
+            usuarioPersist.setNome(usuario.getNome());
+
+
+
+            if (!usuario.getSenha().equals("")) {
+                final var novaSenha= this.escreveSenha(usuario).getSenha();
+                usuarioPersist.setSenha(novaSenha);
+            }
+
+            usuarioRepository.save(usuarioPersist);
+
+            return "redirect:logout";
+        }
+
+        return "redirect:editar";
     }
 
     @DeleteMapping
     public String deletarUsuario(HttpSession session, @RequestParam int idUsuario) {
         if (!checkSession(session)) {
-            return "redirect:/login";
+            return "redirect:login";
         }
         final var usuario = (Usuario) session.getAttribute("usuario");
 
@@ -137,7 +160,7 @@ public class UsuarioController {
 
         usuarioRepository.deleteById(usuario.getIdUsuario());
 
-        return "redirect:/logout";
+        return "redirect:logout";
     }
 
     @PostMapping("/pagar")
@@ -150,5 +173,12 @@ public class UsuarioController {
         session.invalidate();
 
         return "redirect:/";
+   }
+
+   private Usuario escreveSenha(Usuario u) {
+       var senha = u.getSenha();
+       senha = BCrypt.withDefaults().hashToString(12, senha.toCharArray());
+       u.setSenha(senha);
+        return u;
    }
 }

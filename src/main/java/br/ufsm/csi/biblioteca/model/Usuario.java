@@ -19,7 +19,7 @@ public class Usuario {
     private String nome;
     @Column(unique = true, nullable = false)
     private String email;
-    @NonNull
+    @Column(nullable = false)
     private String senha;
     @Column(name = "tipo_usuario", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -38,7 +38,6 @@ public class Usuario {
         this.nome = nome;
         this.email= email;
         this.senha = senha;
-
     }
 
 
