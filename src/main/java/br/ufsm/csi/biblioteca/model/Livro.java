@@ -1,5 +1,6 @@
 package br.ufsm.csi.biblioteca.model;
 
+import br.ufsm.csi.biblioteca.utils.Functions;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -70,11 +71,12 @@ public class Livro {
         this.reservas.add(u);
     }
 
-    public void multar(){
-        if (this.date.isBefore(LocalDate.now())) {
-            final var multa = LocalDate.now().compareTo(this.date);
+    public Usuario multar(){
+        if (this.date.isBefore(Functions.dataGlobal)) {
+            final var multa = Functions.dataGlobal.compareTo(this.date);
             this.emprestadoPara.multar(multa);
         }
+        return this.emprestadoPara;
     }
 
     public void cancelarReserva(Usuario u) {

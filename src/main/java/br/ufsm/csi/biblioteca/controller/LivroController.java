@@ -50,15 +50,18 @@ public class LivroController {
         }
 
         final var optLivro = livroRepository.findById(idLivro);
+        final var usuarioLogado = (Usuario) session.getAttribute("usuario");
+        final var optUsuario = usuarioRepository.findById(usuarioLogado.getIdUsuario());
 
-        if (optLivro.isPresent()) {
+        if (optLivro.isPresent() && optUsuario.isPresent()) {
             final var livro = optLivro.get();
-            final var usuario = (Usuario) session.getAttribute("usuario");
+            final var usuario = optUsuario.get();
             usuario.pegarLivro(livro);
+            usuarioRepository.save(usuario);
             livroRepository.save(livro);
         }
 
-        return "redirect:/livros";
+        return "redirect:/session/" + idUsuario;
     }
     @GetMapping("renovar")
     public String renovarLivros(HttpSession session, @RequestParam int idLivro, @RequestParam int idUsuario) {
@@ -68,14 +71,17 @@ public class LivroController {
         }
 
         final var optLivro = livroRepository.findById(idLivro);
+        final var usuarioLogado = (Usuario) session.getAttribute("usuario");
+        final var optUsuario = usuarioRepository.findById(usuarioLogado.getIdUsuario());
 
-        if (optLivro.isPresent()) {
+        if (optLivro.isPresent() && optUsuario.isPresent()) {
             final var livro = optLivro.get();
-            final var usuario = (Usuario) session.getAttribute("usuario");
+            final var usuario = optUsuario.get();
             usuario.pegarLivro(livro);
+            usuarioRepository.save(usuario);
             livroRepository.save(livro);
         }
-        return "redirect:/livros";
+        return "redirect:/session/" + idUsuario;
     }
 
     @GetMapping("reservar")
@@ -86,18 +92,20 @@ public class LivroController {
         }
 
         final var optLivro = livroRepository.findById(idLivro);
-        //final var optUsuario = usuarioRepository.findById(id_usuario);
+        final var usuarioLogado = (Usuario) session.getAttribute("usuario");
+        final var optUsuario = usuarioRepository.findById(usuarioLogado.getIdUsuario());
 
-        if (optLivro.isPresent()) {
+        if (optLivro.isPresent() && optUsuario.isPresent()) {
             final var livro = optLivro.get();
-            //   final var usuario = optUsuario.get();
+            final var usuario = optUsuario.get();
 
-            livro.reservar((Usuario) session.getAttribute("usuario"));
-
+            livro.reservar(usuario);
+            usuarioRepository.save(usuario);
             livroRepository.save(livro);
-        }
 
-        return "redirect:/livros";
+            return "redirect:/session/" + usuario.getIdUsuario();
+        }
+        return "redirec:/liovros";
     }
 
     @GetMapping("cancelar")
@@ -108,18 +116,21 @@ public class LivroController {
         }
 
         final var optLivro = livroRepository.findById(idLivro);
+        final var usuarioLogado = (Usuario) session.getAttribute("usuario");
+        final var optUsuario = usuarioRepository.findById(usuarioLogado.getIdUsuario());
 
-        if (optLivro.isPresent()) {
+        if (optLivro.isPresent() && optUsuario.isPresent()) {
             final var livro = optLivro.get();
+            final var usuario = optUsuario.get();
 
-            final var usuario = (Usuario) session.getAttribute("usuario");
 
             livro.cancelarReserva(usuario);
 
+            usuarioRepository.save(usuario);
             livroRepository.save(livro);
+            return "redirect:/session/" + usuario.getIdUsuario() ;
         }
-
-        return "redirect:/livros";
+        return "redirec:/livros";
     }
 
     @GetMapping("/devolver")
@@ -131,13 +142,18 @@ public class LivroController {
 
         final var optLivro = livroRepository.findById(idLivro);
 
-        if (optLivro.isPresent()) {
+        final var usuarioLogado = (Usuario) session.getAttribute("usuario");
+        final var optUsuario = usuarioRepository.findById(usuarioLogado.getIdUsuario());
+        if (optLivro.isPresent() && optUsuario.isPresent()) {
             final var livro = optLivro.get();
-            final var usuario = (Usuario) session.getAttribute("usuario");
+            final var usuario = optUsuario.get();
 
             usuario.devolver(livro);
 
             livroRepository.save(livro);
+            usuarioRepository.save(usuario);
+
+            return "redirect:/session/" + usuario.getIdUsuario();
         }
 
         return "redirect:/livros";

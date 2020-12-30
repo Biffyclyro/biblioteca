@@ -8,16 +8,26 @@
 
     <title>Biblioteca</title>
 </head>
-<body>
+<body >
 
 <th:block th:if="${#session} and ${#session.getValue('usuario')}">
     <a href="/usuario/logout" class="btn btn-primary">Logout</a>
-    <a href="usuario/editar" class="btn btn-info">Editar</a>
+    <a href="/usuario/editar" class="btn btn-info">Editar</a>
     <th:block th:if="${#session.getAttribute('usuario').getTipoUsuario.name() == 'SUPER'}">
         <a href="usuario/listar" class="btn btn-success">Listar Usuários</a>
 
     </th:block>
+    <a href="/adianta_dia" class="btn btn-warning">Avança dia</a>
 </th:block>
+
+<div class="input-group offset-9 col-md-3">
+    <form th:action="@{pagar}" th:method="post">
+        <h4>Valor devido</h4>
+        <label for="multa" th:text="${#session.getAttribute('usuario').getMulta()}"></label>
+        <input type="number" id="multa" name="multa">
+        <button class="btn btn-primary" type="submit">Pagar</button>
+    </form>
+</div>
 
 <div class="offset-3 col-md-8 ">
     <div class="col-md-6">
@@ -94,7 +104,7 @@
                                   th:action="@{livros/renovar}">
                                 <td>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-danger">Renovar</button>
+                                        <button type="submit" class="btn btn-warning">Renovar</button>
                                         <input type="hidden" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}">
 
                                     </div>
