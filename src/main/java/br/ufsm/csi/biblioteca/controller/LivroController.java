@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,9 +30,9 @@ public class LivroController {
     @GetMapping
     public String listarLivros(HttpSession session, Model model) {
         if (!checkSession(session)) {
-
             return "redirect:/usuario/login";
         }
+
         final var acervo = livroRepository.findAll();
         acervo.forEach(x -> {
             System.out.println(x.getReservas().contains(session.getAttribute("usuario")));
@@ -57,6 +58,23 @@ public class LivroController {
             livroRepository.save(livro);
         }
 
+        return "redirect:/livros";
+    }
+    @GetMapping("renovar")
+    public String renovarLivros(HttpSession session, @RequestParam int idLivro, @RequestParam int idUsuario) {
+        if (!checkSession(session)) {
+
+            return "redirect:/usuario/login";
+        }
+
+        final var optLivro = livroRepository.findById(idLivro);
+
+        if (optLivro.isPresent()) {
+            final var livro = optLivro.get();
+            final var usuario = (Usuario) session.getAttribute("usuario");
+            usuario.pegarLivro(livro);
+            livroRepository.save(livro);
+        }
         return "redirect:/livros";
     }
 
@@ -168,6 +186,7 @@ public class LivroController {
             return "redirect:/usuario/login";
         }
 
+
         livroRepository.save(livro);
 
         return "redirect:/livros";
@@ -195,7 +214,7 @@ public class LivroController {
         return "livros";
     }
 
-    @DeleteMapping
+    @PostMapping("deletar")
     public String excluirLivro(@RequestParam int idLivro, HttpSession session) {
         if (!checkSession(session)) {
 
@@ -203,7 +222,10 @@ public class LivroController {
         }
         final var usuario = (Usuario) session.getAttribute("usuario");
 
+        System.out.println(usuario.getTipoUsuario().name());
+
         if (usuario.getTipoUsuario() == Usuario.TipoUsuario.SUPER) {
+            System.out.println("n entrou");
             livroRepository.deleteById(idLivro);
         }
 

@@ -28,11 +28,12 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Salvar</button>
-        <form th:action="@{deletar}" th:method="DELETE">
-            <button type="submit" class="btn btn-danger">Deletar usuário</button>
-            <input type="text" name="idUsuario" th:value="${#session.getAttribute('usuario').getIdUsuario()}" hidden>
-        </form>
 
+
+    </form>
+    <form th:action="@{deletar}" th:method="post">
+        <button type="submit" class="btn btn-danger">Deletar usuário</button>
+        <input type="text" name="idUsuario" th:value="${#session.getAttribute('usuario').getIdUsuario()}" hidden>
     </form>
 </div>
 

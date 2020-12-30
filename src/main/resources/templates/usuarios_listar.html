@@ -50,7 +50,7 @@
                     <td th:text="${item.getEmprestados()}"></td>
                     <td th:text="${item.getMulta()}"></td>
                     <td>
-                        <form th:action="@{usuario}" th:method="DELETE">
+                        <form th:action="@{/usuario/deletar}" th:method="post">
                             <button type="submit" class="btn btn-danger">Deletar</button>
                             <input type="text" name="idUsuario" th:value="${item.getIdUsuario()}" hidden>
                         </form>

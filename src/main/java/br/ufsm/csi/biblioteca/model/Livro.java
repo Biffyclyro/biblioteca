@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -13,12 +15,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 @NoArgsConstructor
 public class Livro {
 
-
-
     @Id
     @Column(name = "id_livro")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int idLivro;
+    private LocalDate date;
     private String titulo;
     private String autores;
     @Column(unique = true)
@@ -43,27 +44,37 @@ public class Livro {
     }
 
     public void emprestar(Usuario u){
-        setEmprestado(true);
-        setEmprestadoPara(u);
+        var prazo = LocalDate.now();
+        if (u.getTipoUsuario() == Usuario.TipoUsuario.PROFESSOR) {
+            prazo = prazo.plusDays(15);
+        } else {
+            prazo = prazo.plusDays(7);
+        }
+        this.setEmprestado(true);
+        this.setEmprestadoPara(u);
+        this.setDate(prazo);
     }
 
     public void devolver(Usuario u) {
         if (u.getIdUsuario() == this.emprestadoPara.getIdUsuario()) {
-            this .emprestadoPara = null;
+            this.emprestadoPara = null;
             this.setEmprestado(false);
+            this.setDate(null);
         }
     }
 
-
     public Queue<Usuario> getReservas() {
-        //this.reservas.forEach(x -> System.out.println(x.getEmail()));
         return new LinkedList<Usuario>(this.reservas);
     }
-
-
-
     public void reservar(Usuario u){
         this.reservas.add(u);
+    }
+
+    public void multar(){
+        if (this.date.isBefore(LocalDate.now())) {
+            final var multa = LocalDate.now().compareTo(this.date);
+            this.emprestadoPara.multar(multa);
+        }
     }
 
     public void cancelarReserva(Usuario u) {

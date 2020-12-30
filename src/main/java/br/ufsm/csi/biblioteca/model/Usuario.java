@@ -72,6 +72,10 @@ public class Usuario {
         }
     }
 
+    public void multar(int multa) {
+        if (multa > 0) this.multa += multa;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

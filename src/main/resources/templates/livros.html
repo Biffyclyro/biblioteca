@@ -49,11 +49,19 @@
             <tbody>
             <th:block>
                 <tr th:each="item: ${acervo}">
+
                     <td th:text="${item.getTitulo()}"></td>
                     <td th:text="${item.getAutores()}"></td>
                     <td th:text="${item.getEdicao()}"></td>
                     <td th:text="${item.getAno()}"></td>
                     <td th:text="${item.getIsbn()}"></td>
+                    <td th:if="${#session.getAttribute('usuario').getTipoUsuario().name() == 'SUPER'}">
+
+                        <form th:action="@{livros/editar}" th:method="get">
+                            <input type="text" name="idLivro" th:value="${item.getIdLivro()}" hidden>
+                            <button type="submit" class="btn btn-info">Editar</button>
+                        </form>
+                    </td>
                     <th:block th:if="${!item.isEmprestado()}">
                         <form th:method="get"
                               th:action="@{livros/emprestar}"
@@ -72,13 +80,21 @@
                     <th:block th:unless="${!item.isEmprestado()}">
                         <th:block th:if="${item.getEmprestadoPara().getIdUsuario() == #session.getAttribute('usuario').getIdUsuario()}">
 
-                            <form
-                                    method="get"
-                                    th:action="@{livros/devolver}"
-                            >
+                            <form method="get"
+                                    th:action="@{livros/devolver}">
                                 <td>
                                     <div class="form-group" >
                                         <button type="submit" class="btn btn-danger">Devolver</button>
+                                        <input type="hidden" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}">
+
+                                    </div>
+                                </td>
+                            </form>
+                            <form method="get"
+                                  th:action="@{livros/renovar}">
+                                <td>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-danger">Renovar</button>
                                         <input type="hidden" name="idLivro" id="idLivro" th:value="${item.getIdLivro()}">
 
                                     </div>

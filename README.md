@@ -1,6 +1,6 @@
 #biblioteca
-[] crud usuario
-[] crud livros
+[X] crud usuario
+[X] crud livros
 [X] login/logout
 [X] emprestar livro
 [X] devolver livro

@@ -131,8 +131,6 @@ public class UsuarioController {
             }
             usuarioPersist.setNome(usuario.getNome());
 
-
-
             if (!usuario.getSenha().equals("")) {
                 final var novaSenha= this.escreveSenha(usuario).getSenha();
                 usuarioPersist.setSenha(novaSenha);
@@ -146,14 +144,16 @@ public class UsuarioController {
         return "redirect:editar";
     }
 
-    @DeleteMapping
+    @PostMapping("deletar")
     public String deletarUsuario(HttpSession session, @RequestParam int idUsuario) {
         if (!checkSession(session)) {
             return "redirect:login";
         }
         final var usuario = (Usuario) session.getAttribute("usuario");
 
-        if (usuario.getIdUsuario() != idUsuario && usuario.getTipoUsuario() == Usuario.TipoUsuario.SUPER){
+        System.out.println("ta no metodo de exclusão");
+
+        if (usuario.getIdUsuario() != idUsuario || usuario.getTipoUsuario() == Usuario.TipoUsuario.SUPER){
             usuarioRepository.deleteById(idUsuario);
              return "redirect:listar";
         }
