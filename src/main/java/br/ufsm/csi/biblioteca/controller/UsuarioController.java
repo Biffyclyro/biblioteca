@@ -37,7 +37,6 @@ public class UsuarioController {
             final var u = optUsuario.get();
             final  var resultado =  BCrypt.verifyer().verify(senha.toCharArray(), u.getSenha());
 
-            System.out.println( u.getSenha());
             if(resultado.verified){
 
                 return "redirect:/session/" + u.getIdUsuario();
@@ -62,7 +61,6 @@ public class UsuarioController {
         if (usuario.getNome().equals("SUPER")) {
             usuario.setTipoUsuario(Usuario.TipoUsuario.SUPER);
         }
-
         usuarioRepository.save(this.escreveSenha(usuario));
 
        return "redirect:login";
@@ -151,20 +149,31 @@ public class UsuarioController {
         }
         final var usuario = (Usuario) session.getAttribute("usuario");
 
-        System.out.println("ta no metodo de exclusão");
-
         if (usuario.getIdUsuario() != idUsuario || usuario.getTipoUsuario() == Usuario.TipoUsuario.SUPER){
             usuarioRepository.deleteById(idUsuario);
              return "redirect:listar";
         }
-
         usuarioRepository.deleteById(usuario.getIdUsuario());
 
         return "redirect:logout";
     }
 
     @PostMapping("/pagar")
-    public String pagar(@RequestParam double multa) {
+    public String pagar(@RequestParam(defaultValue = "0") double multa, HttpSession session) {
+        if (!checkSession(session)) {
+            return "redirect:login";
+        }
+        final var usuarioLogado = (Usuario) session.getAttribute("usuario");
+        final var optUsuario = usuarioRepository.findById(usuarioLogado.getIdUsuario());
+
+        if (optUsuario.isPresent()) {
+            final var usuario = optUsuario.get();
+            usuario.pagarMulta(multa);
+            usuarioRepository.save(usuario);
+
+            return "redirect:/session/" + usuario.getIdUsuario();
+        }
+
         return "redirect:/home";
     }
 

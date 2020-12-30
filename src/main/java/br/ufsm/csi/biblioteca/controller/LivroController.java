@@ -77,9 +77,11 @@ public class LivroController {
         if (optLivro.isPresent() && optUsuario.isPresent()) {
             final var livro = optLivro.get();
             final var usuario = optUsuario.get();
-            usuario.pegarLivro(livro);
-            usuarioRepository.save(usuario);
-            livroRepository.save(livro);
+            if (livro.getReservas().isEmpty()) {
+                usuario.pegarLivro(livro);
+                usuarioRepository.save(usuario);
+                livroRepository.save(livro);
+            }
         }
         return "redirect:/session/" + idUsuario;
     }
@@ -99,13 +101,16 @@ public class LivroController {
             final var livro = optLivro.get();
             final var usuario = optUsuario.get();
 
-            livro.reservar(usuario);
-            usuarioRepository.save(usuario);
-            livroRepository.save(livro);
+            if (usuario.getMulta() == 0 ) {
 
-            return "redirect:/session/" + usuario.getIdUsuario();
+                livro.reservar(usuario);
+                usuarioRepository.save(usuario);
+                livroRepository.save(livro);
+
+                return "redirect:/session/" + usuario.getIdUsuario();
+            }
         }
-        return "redirec:/liovros";
+        return "redirect:/livros";
     }
 
     @GetMapping("cancelar")
@@ -122,8 +127,6 @@ public class LivroController {
         if (optLivro.isPresent() && optUsuario.isPresent()) {
             final var livro = optLivro.get();
             final var usuario = optUsuario.get();
-
-
             livro.cancelarReserva(usuario);
 
             usuarioRepository.save(usuario);

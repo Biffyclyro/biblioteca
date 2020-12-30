@@ -15,7 +15,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 @Entity
 @NoArgsConstructor
 public class Livro {
-
     @Id
     @Column(name = "id_livro")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -67,14 +66,14 @@ public class Livro {
     public Queue<Usuario> getReservas() {
         return new LinkedList<Usuario>(this.reservas);
     }
+
     public void reservar(Usuario u){
         this.reservas.add(u);
     }
 
     public Usuario multar(){
         if (this.date.isBefore(Functions.dataGlobal)) {
-            final var multa = Functions.dataGlobal.compareTo(this.date);
-            this.emprestadoPara.multar(multa);
+            this.emprestadoPara.multar();
         }
         return this.emprestadoPara;
     }

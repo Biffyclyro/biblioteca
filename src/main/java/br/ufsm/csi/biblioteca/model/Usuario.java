@@ -40,20 +40,21 @@ public class Usuario {
         this.senha = senha;
     }
 
-
     public void setTipoUsuario(TipoUsuario tipoUsuario) {
         if (tipoUsuario == TipoUsuario.PROFESSOR) {
-            setLIMITE_LIVROS(5);
+            this.setLIMITE_LIVROS(5);
         } else {
-            setLIMITE_LIVROS(3);
+            this.setLIMITE_LIVROS(3);
         }
         this.tipoUsuario = tipoUsuario;
     }
 
     public void pegarLivro(Livro l) {
         if (this.emprestados < this.LIMITE_LIVROS) {
-            l.emprestar(this);
-            this.emprestados++;
+            if(this.multa == 0 || this.emprestados == 0) {
+                l.emprestar(this);
+                this.emprestados++;
+            }
         }
     }
 
@@ -63,7 +64,7 @@ public class Usuario {
     }
 
     public double pagarMulta(double dinheiro) {
-        if (this.multa - dinheiro <= 0 )     {
+        if (this.multa - dinheiro >= 0 )     {
             this.multa -= dinheiro;
             return 0;
         } else {
@@ -72,8 +73,8 @@ public class Usuario {
         }
     }
 
-    public void multar(int multa) {
-        if (multa > 0) this.multa += multa;
+    public void multar() {
+        this.multa ++;
     }
 
     @Override
