@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Biblioteca</title>
+</head>
+<body>
+
+<th:block th:if="${#session} and ${#session.getValue('usuario')}">
+    <a href="/usuario/logout" class="btn btn-primary">Logout</a>
+</th:block>
+
+<div class="offset-3 col-md-8 ">
+    <div class="col-md-6">
+        <form th:action="@{usuario/buscar}" th:method="get">
+            <div class="input-group mb-3">
+                <input type="text" name="texto" id="texto" class="form-control">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class=" col-md-12">
+        <table id="tabela" class="able table-dark">
+            <thead>
+            <tr>
+                <td><b>Nome</b></td>
+                <td><b>Email</b></td>
+                <td><b>Tipo de usuário</b></td>
+                <td><b>Limite de livros</b></td>
+                <td><b>Livros emprestados</b></td>
+                <td><b>Multa</b></td>
+
+            </tr>
+            </thead>
+            <tbody>
+            <th:block>
+                <tr th:each="item: ${usuarios}">
+                    <td th:text="${item.geNome()}"></td>
+                    <td th:text="${item.getEmail()}"></td>
+                    <td th:text="${item.getTipoUsuario()}"></td>
+                    <td th:text="${item.getLimiteLivros()}"></td>
+                    <td th:text="${item.getEmprestados()}"></td>
+                    <td>
+                        <form th:action="@{usuario}" th:method="DELETE">
+                            <button type="submit" class="btn btn-danger">Deletar</button>
+                            <input type="text" name="idUsuario" th:value="${item.getIdUsuario()}" hidden>
+                        </form>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

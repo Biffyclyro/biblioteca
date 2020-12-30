@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static br.ufsm.csi.biblioteca.utils.Functions.checkSession;
 
 @Controller
@@ -38,9 +41,7 @@ public class UsuarioController {
                 return "redirect:/session/" + u.getIdUsuario();
             }
         }
-
         return "redirect:login";
-
     }
 
     @GetMapping("/cadastro")
@@ -56,15 +57,43 @@ public class UsuarioController {
         } else {
             usuario.setTipoUsuario(Usuario.TipoUsuario.ALUNO);
         }
-
         if (usuario.getNome().equals("SUPER")) {
             usuario.setTipoUsuario(Usuario.TipoUsuario.SUPER);
         }
 
         usuarioRepository.save(usuario);
 
-
        return "redirect:/usuario/login";
+    }
+
+    @GetMapping("listar")
+    public String listarUsuarios(HttpSession session, Model model) {
+        if (!checkSession(session)) {
+           return "redirect:login";
+        }
+        final var usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario.getTipoUsuario() == Usuario.TipoUsuario.SUPER) {
+            final var usuarios = usuarioRepository.findAll();
+            model.addAttribute("usuarios", usuarios);
+
+            return "usuarios_listar";
+        }
+
+        return "redirect:/livros";
+    }
+
+    @GetMapping("buscar")
+    public String buscarUsuario(HttpSession session, @RequestParam String texto, Model model) {
+        Set<Usuario> usuarioSet = new HashSet<>();
+        final var busca1 = usuarioRepository.findByNomeContainingIgnoreCase(texto);
+        final var busca2 = usuarioRepository.findByEmail(texto);
+
+        usuarioSet.addAll(busca1);
+        busca2.ifPresent(usuarioSet :: add);
+
+        model.addAttribute("usuarios", usuarioSet.toArray());
+
+        return "usuarios_listar";
     }
 
     @GetMapping("/editar")
@@ -92,15 +121,20 @@ public class UsuarioController {
         usuarioRepository.save(usuario);
 
         return "redirect:/logout";
-
     }
 
     @DeleteMapping
-    public String deletarUsuario(HttpSession session) {
+    public String deletarUsuario(HttpSession session, @RequestParam int idUsuario) {
         if (!checkSession(session)) {
             return "redirect:/login";
         }
         final var usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario.getIdUsuario() != idUsuario && usuario.getTipoUsuario() == Usuario.TipoUsuario.SUPER){
+            usuarioRepository.deleteById(idUsuario);
+             return "redirect:listar";
+        }
+
         usuarioRepository.deleteById(usuario.getIdUsuario());
 
         return "redirect:/logout";

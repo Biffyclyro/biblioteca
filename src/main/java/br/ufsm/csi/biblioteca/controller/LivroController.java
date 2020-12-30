@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static br.ufsm.csi.biblioteca.utils.Functions.checkSession;
 
 @Controller
@@ -26,7 +29,6 @@ public class LivroController {
     @GetMapping
     public String listarLivros(HttpSession session, Model model) {
         if (!checkSession(session)) {
-            System.out.println("que?");
 
             return "redirect:/usuario/login";
         }
@@ -171,16 +173,24 @@ public class LivroController {
         return "redirect:/livros";
     }
 
-        @GetMapping("/buscar")
-    public String buscarLivro(HttpSession session, @RequestParam String titulo, Model model) {
+    @GetMapping("/buscar")
+    public String buscarLivro(HttpSession session, @RequestParam String texto, Model model) {
         if (!checkSession(session)) {
             System.out.println("que?");
 
             return "redirect:/usuario/login";
         }
-        final var acervo = livroRepository.findAllByTitulo(titulo);
+        Set<Livro> livroSet = new HashSet<>();
 
-        model.addAttribute("acervo", acervo);
+        final var busca1 = livroRepository.findByTituloContainingIgnoreCase(texto);
+        final var busca2 = livroRepository.findByIsbn(texto);
+        final var busca3 = livroRepository.findByEditora(texto);
+
+        livroSet.addAll(busca1);
+        busca2.ifPresent(livroSet::add);
+        livroSet.addAll(busca3);
+
+        model.addAttribute("acervo", livroSet.toArray());
 
         return "livros";
     }

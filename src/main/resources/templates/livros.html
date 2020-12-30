@@ -12,18 +12,22 @@
 
 <th:block th:if="${#session} and ${#session.getValue('usuario')}">
     <a href="/usuario/logout" class="btn btn-primary">Logout</a>
+    <th:block th:if="${#session.getAttribute('usuario').getTipoUsuario.getName() == 'SUPER'}">
+        <a href="usuario/listar" class="btn btn-success">Listar Usuários</a>
+
+    </th:block>
 </th:block>
 
 <div class="offset-3 col-md-8 ">
     <div class="col-md-6">
-    <form th:action="@{livros/buscar}" th:method="get">
-        <div class="input-group mb-3">
-            <input type="text" name="titulo" id="titulo" class="form-control">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">Buscar</button>
+        <form th:action="@{livros/buscar}" th:method="get">
+            <div class="input-group mb-3">
+                <input type="text" name="texto" id="texto" class="form-control">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
     </div>
 
 
@@ -35,6 +39,7 @@
                 <td><b>Autores</b></td>
                 <td><b>Edição</b></td>
                 <td><b>Ano</b></td>
+                <td><b>ISBN</b></td>
                 <div th:if="${#session} and ${#session.getValue('usuario')} and ${#session.getValue('usuario').getTipoUsuario().name() == 'SUPER'}">
                     <td scope="col"><a class="btn btn-primary" href="/livros/cadastro">Novo Livro</a></td>
                 </div>
@@ -47,6 +52,7 @@
                     <td th:text="${item.getAutores()}"></td>
                     <td th:text="${item.getEdicao()}"></td>
                     <td th:text="${item.getAno()}"></td>
+                    <td th:text="${item.getIsbn()}"></td>
                     <th:block th:if="${!item.isEmprestado()}">
                         <form th:method="get"
                               th:action="@{livros/emprestar}"

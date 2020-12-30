@@ -6,4 +6,5 @@
 [X] devolver livro
 [] pagar multa
 [X] reservar
-[] buscar livro
+[X] buscar livros pelo ISBN, por parte do título e pela editora.
+[] buscar usuários por parte do nome e pelo login
