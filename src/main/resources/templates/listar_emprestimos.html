@@ -16,7 +16,7 @@
 
 <div class="offset-3 col-md-8 ">
     <div class="col-md-6">
-        <form th:action="@{buscar}" th:method="get">
+        <form th:action="@{emprestimos/buscar}" th:method="get">
             <div class="input-group mb-3">
                 <input type="text" name="texto" id="texto" class="form-control">
                 <div class="input-group-append">
@@ -31,35 +31,17 @@
         <table id="tabela" class="able table-dark">
             <thead>
             <tr>
-                <td><b>Nome</b></td>
-                <td><b>Email</b></td>
-                <td><b>Tipo de usuário</b></td>
-                <td><b>Limite de livros</b></td>
-                <td><b>Livros emprestados</b></td>
-                <td><b>Multa</b></td>
-
+                <td><b>Título</b></td>
+                <td><b>Emprestado para</b></td>
+                <td><b>ISBN</b></td>
             </tr>
             </thead>
             <tbody>
-            <th:block>
-                <tr th:each="item: ${usuarios}">
-                    <td th:text="${item.getNome()}"></td>
-                    <td th:text="${item.getEmail()}"></td>
-                    <td th:text="${item.getTipoUsuario()}"></td>
-                    <td th:text="${item.getLIMITE_LIVROS()}"></td>
-                    <td th:text="${item.getEmprestados()}"></td>
-                    <td th:text="${item.getMulta()}"></td>
-                    <td>
-                        <form th:action="@{/usuario/deletar}" th:method="post">
-                            <button type="submit" class="btn btn-danger">Deletar</button>
-                            <input type="text" name="idUsuario" th:value="${item.getIdUsuario()}" hidden>
-                        </form>
-                        <form th:action="@{/emprestimos/listar_de_usuario}" th:method="post">
-                            <button type="submit" class="btn btn-info">Listar emprestimos</button>
-                            <input type="text" name="idUsuario" th:value="${item.getIdUsuario()}" hidden>
-                        </form>
-                    </td>
-
+            <th:block th:each="item: ${livros}">
+                <tr th:if="${item.isEmprestado()}">
+                    <td th:text="${item.getTitulo()}"></td>
+                    <td th:text="${item.getEmprestadoPara().getNome()}"></td>
+                    <td th:text="${item.getIsbn()}"></td>
                 </tr>
             </th:block>
             </tbody>

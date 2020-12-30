@@ -9,3 +9,5 @@
 [X] buscar livros pelo ISBN, por parte do título e pela editora.
 [X] buscar usuários por parte do nome e pelo login
 [X] restrições da multa
+[X] listar emprestimos
+[X] busca emprestimos
