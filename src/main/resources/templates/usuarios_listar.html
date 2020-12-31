@@ -14,7 +14,7 @@
     <a href="/usuario/logout" class="btn btn-primary">Logout</a>
 </th:block>
 
-<div class="offset-3 col-md-8 ">
+<div class="offset-1 col-md-8 ">
     <div class="col-md-6">
         <form th:action="@{buscar}" th:method="get">
             <div class="input-group mb-3">
@@ -27,8 +27,11 @@
     </div>
 
 
+
     <div class=" col-md-12">
-        <table id="tabela" class="able table-dark">
+
+        <h1>Lista de usuários</h1>
+        <table id="tabela" class="table table-hover  table-dark col-12  ">
             <thead>
             <tr>
                 <td><b>Nome</b></td>
@@ -54,6 +57,8 @@
                             <button type="submit" class="btn btn-danger">Deletar</button>
                             <input type="text" name="idUsuario" th:value="${item.getIdUsuario()}" hidden>
                         </form>
+                    </td>
+                    <td>
                         <form th:action="@{/emprestimos/listar_de_usuario}" th:method="post">
                             <button type="submit" class="btn btn-info">Listar emprestimos</button>
                             <input type="text" name="idUsuario" th:value="${item.getIdUsuario()}" hidden>

@@ -14,7 +14,8 @@
     <a href="/usuario/logout" class="btn btn-primary">Logout</a>
 </th:block>
 
-<div class="offset-3 col-md-8 ">
+
+<div class="offset-1 col-12 row">
     <div class="col-md-6">
         <form th:action="@{emprestimos/buscar}" th:method="get">
             <div class="input-group mb-3">
@@ -27,8 +28,10 @@
     </div>
 
 
-    <div class=" col-md-12">
-        <table id="tabela" class="able table-dark">
+    <div class=" col-8 row">
+
+        <h1>Litar emprestimos</h1>
+        <table id="tabela" class=" table table-hover  table-dark col-12 ">
             <thead>
             <tr>
                 <td><b>Título</b></td>

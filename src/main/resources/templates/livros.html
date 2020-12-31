@@ -15,9 +15,9 @@
     <a href="/usuario/editar" class="btn btn-info">Editar</a>
     <th:block th:if="${#session.getAttribute('usuario').getTipoUsuario.name() == 'SUPER'}">
         <a href="usuario/listar" class="btn btn-success">Listar Usuários</a>
+        <a href="/emprestimos" class="btn btn-success">Listar emprestimos</a>
 
     </th:block>
-    <a href="/emprestimos" class="btn btn-success">Listar emprestimos</a>
     <a href="/adianta_dia" class="btn btn-warning">Avança dia</a>
 </th:block>
 
@@ -30,7 +30,8 @@
     </form>
 </div>
 
-<div class="offset-3 col-md-8 ">
+
+<div class="col-md-10 offset-1">
     <div class="col-md-6">
         <form th:action="@{livros/buscar}" th:method="get">
             <div class="input-group mb-3">
@@ -43,10 +44,13 @@
     </div>
 
 
-    <div class=" col-md-12">
-        <table id="tabela" class="able table-dark">
+
+    <div class=" col-12 row">
+
+        <h1>Acervo</h1>
+        <table id="tabela" class="table table-hover  table-dark col-12">
             <thead>
-            <tr>
+            <tr class="jus">
                 <td><b>Livro</b></td>
                 <td><b>Autores</b></td>
                 <td><b>Edição</b></td>
