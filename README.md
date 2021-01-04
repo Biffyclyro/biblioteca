@@ -1,4 +1,4 @@
-#biblioteca
+# Biblioteca
 
 - A base de dados utilizada é o Postgres.
 - O sistema roda na porta 8090.
